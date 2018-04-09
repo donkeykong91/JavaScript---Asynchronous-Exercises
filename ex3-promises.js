@@ -20,26 +20,11 @@ function output(text) {
 // **************************************
 
 function getFile(file) {
-	// what do we do here?
-	let text;
-	fakeAjax(file, function() {
-		text = file;
-	});
 	// return a promise
 	return new Promise(
-		function(reslove, reject) {
-			if (text) resolve(text);
-			else error();
+		function executor(reslove) {
+			fakeAjax(file, resolve);
 	});
-}
-
-function finish() {
-	output(arguments[0]);
-	output("Complete!");
-}
-
-function error() {
-	output("Something when wrong!");
 }
 
 var getFile1 = getFile("file1");
@@ -47,17 +32,17 @@ var getFile2 = getFile("file2");
 var getFile3 = getFile("file3");
 
 getFile1()
-.then(function(text) {
-	output(text);
+.then(output)
+.then(function() {
 	return getFile2();
 })
-.then(function(text) {
-	output(text);
+.then(output)
+.then(function() {
 	return getFile3();
 })
-.then(
-	finish,
-	error
-);
+.then(output)
+.then(function() {
+	output("Complete!");
+});
 // request all files at once in "parallel"
 // ???

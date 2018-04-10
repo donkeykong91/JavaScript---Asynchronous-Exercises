@@ -35,13 +35,14 @@ function getFile(file) {
 // ???
 
 ASQ()
-.gate(
-	function(done) {getFile("file1");},
-	function(done) {getFile("file2");},
-	function(done) {getFile("file3");}
-)
-.val(
-	output, output, output
+.seq(
+	...["file1","file2","file3"]
+	.map(getFile)
+	.map(function(sq) {
+		return function() {
+			return sq.val(output);
+		};
+	})
 )
 .val(function() {
 	output("Complete!");

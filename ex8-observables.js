@@ -1,23 +1,32 @@
-function fromEvent(el, eventType) {
-	return ASQ.react(function(proceed) {
-		$(el).bind(eventType, proceed);
-	});
-}
-
 $(document).ready(function(){
+/************Stream Producer*******************/
 	var $btn = $("#btn"),
-		$list = $("#list");
+		$list = $("#list"),
 
-	// $btn.click(function(evt){
-	// 	// TODO
-	// });
+		clicks = ASQ.react.of(),
+		msgs = ASQ.react.of(),
+		latest;
 
-	let rsq = fromEvent($btn, "click");
-
-	// TODO: setup sampled sequence, populate $list
-	rsq.val(function(evt) {
-		console.log("Hello");
-	}).val(function(){
-		sleep(500);
+	$btn.click(function(evt){
+		clicks.push(evt);
 	});
+
+/**************Stream Producer******************/
+
+/**************Stream Consumer*******************/
+	setInterval(function(){
+		if (latest) {
+			msgs.push("Clicked!");
+			latest = null;
+		}
+	},1000);
+
+	clicks.val(function(evt){
+		latest = evt;
+	});
+
+	msgs.val(function(msg){
+		$list.append($("<div>" + msg + "</div>"));
+	});
+/***********Stream Consumer***********************/
 });
